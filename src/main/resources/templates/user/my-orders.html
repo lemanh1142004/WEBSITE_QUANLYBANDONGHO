@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của tôi</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            background: #fff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #17a2b8, #28a745);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1::before {
+            content: '📦';
+            font-size: 28px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert-info::before {
+            content: '💡';
+            font-size: 24px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .table th,
+        .table td {
+            text-align: center;
+            padding: 16px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        .table th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table tbody tr:nth-child(even):hover {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        }
+
+        .table td {
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .table td:first-child {
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .btn-info.btn-sm {
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-info.btn-sm::before {
+            content: '👁️';
+            font-size: 12px;
+        }
+
+        .btn-info.btn-sm:hover {
+            background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+            text-decoration: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .total-amount {
+            font-weight: 700;
+            color: #28a745;
+            font-size: 15px;
+        }
+
+        .order-date {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .shipping-address {
+            max-width: 200px;
+            word-wrap: break-word;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 700px;
+            }
+
+            .table th, 
+            .table td {
+                font-size: 12px;
+                padding: 10px 8px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .btn-info.btn-sm {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Loading animation */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: body}"></div>
+
+    <div class="container my-4">
+        <h1>Đơn hàng của tôi</h1>
+        <p>Theo dõi và quản lý tất cả đơn hàng của bạn một cách dễ dàng.</p>
+
+        <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">
+            <p>Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(orders)}">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td th:text="'#' + ${order.id}"></td>
+                            <td class="shipping-address" th:text="${order.shippingAddress}"></td>
+                            <td class="order-date" th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td class="total-amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
+                            <td>
+                                <span class="status-badge" 
+                                      th:classappend="${order.status == 'Pending' ? 'status-pending' : 
+                                                     order.status == 'Confirmed' ? 'status-confirmed' : 
+                                                     'status-delivered'}"
+                                      th:text="${order.status}">
+                                </span>
+                            </td>
+                            <td>
+                                <a th:href="@{/my-orders/{id}(id=${order.id})}" class="btn btn-info btn-sm">
+                                    Xem chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: body}"></div>
+</body>
+</html>

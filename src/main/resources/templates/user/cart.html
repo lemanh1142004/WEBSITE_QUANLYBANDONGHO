@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng Của Bạn</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    </head>
+<body>
+
+    <div th:replace="~{fragments/header :: body}"></div>
+
+    <main class="container my-4">
+        <h2 class="mb-4 text-center">Giỏ Hàng Của Bạn</h2>
+
+        <div th:if="${errorMessage}" class="alert alert-danger text-center" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${cart != null and cart.cartItems != null and !cart.cartItems.empty}">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="align-middle">Sản phẩm</th>
+                            <th class="text-right align-middle">Giá</th>
+                            <th class="text-center align-middle">Số lượng</th>
+                            <th class="text-right align-middle">Tổng cộng</th>
+                            <th class="text-center align-middle">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${cart.cartItems}">
+                            <td class="d-flex align-items-center">
+                                <img th:src="@{${item.product.imageUrl}}" alt="Product Image" class="img-thumbnail mr-3" style="width: 70px; height: 70px; object-fit: cover;">
+                                <span th:text="${item.product.name}">Tên Sản Phẩm</span>
+                            </td>
+                            <td class="text-right align-middle">
+                                <span th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">100.000 VND</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <div class="input-group input-group-sm quantity-control">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button" th:onclick="'decreaseQuantity(' + ${item.id} + ')'">-</button>
+                                    </div>
+                                    <input type="number" th:id="'quantity' + ${item.id}"
+                       th:value="${item.quantity}" min="1"
+                       th:max="${item.product.stockQuantity}"  class="form-control text-center"
+                       onchange="updateCartItem(this.dataset.cartItemId)" th:data-cart-item-id="${item.id}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" th:onclick="'increaseQuantity(' + ${item.id} + ')'">+</button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-right align-middle">
+                                <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + ' VND'">200.000 VND</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <button class="btn btn-danger btn-sm" th:onclick="'removeCartItem(' + ${item.id} + ')'">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Tổng cộng giỏ hàng:</strong></td>
+                            <td class="text-right">
+                                <strong><span th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VND'">500.000 VND</span></strong>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="text-right mt-4">
+                <a th:href="@{/checkout}" class="btn btn-primary btn-lg">Tiến Hành Thanh Toán</a>
+            </div>
+        </div>
+        <div th:unless="${cart != null and cart.cartItems != null and !cart.cartItems.empty}" class="alert alert-info text-center">
+            Giỏ hàng của bạn đang trống.
+            <br>
+            <a th:href="@{/user}" class="btn btn-info mt-2">Tiếp tục mua sắm</a>
+        </div>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: body}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script th:src="@{/js/cart.js}"></script>
+    <script th:inline="javascript">
+        // Lấy CSRF token và header name từ Spring Security
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeaderName = /*[[${_csrf.headerName}]]*/ '';
+
+        function sendRequest(method, url, data) {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeaderName]: csrfToken // Thêm CSRF token vào header
+                },
+                body: data ? JSON.stringify(data) : null
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Nếu phản hồi không thành công, cố gắng đọc lỗi từ body
+                    return response.json().then(err => {
+                        let errorMessage = err.message || 'Đã xảy ra lỗi không xác định.';
+                        if (err.errors && err.errors.length > 0) {
+                            errorMessage += '\nChi tiết: ' + err.errors.map(e => e.defaultMessage || e.message).join(', ');
+                        }
+                        throw new Error(errorMessage);
+                    }).catch(() => {
+                        // Nếu không parse được JSON, báo lỗi chung
+                        throw new Error(`Server returned an error: ${response.status} ${response.statusText}`);
+                    });
+                }
+                return response.text(); // Hoặc response.json() nếu API trả về JSON
+            })
+            .then(message => {
+                alert(message);
+                location.reload(); // Tải lại trang để cập nhật giỏ hàng
+            })
+            .catch(error => {
+                alert('Lỗi: ' + error.message);
+                console.error('Lỗi chi tiết:', error);
+            });
+        }
+
+        function updateCartItem(cartItemId) {
+            const quantityInput = document.getElementById('quantity' + cartItemId);
+            const newQuantity = parseInt(quantityInput.value);
+            const maxQuantity = parseInt(quantityInput.max); // Lấy giá trị max từ thuộc tính HTML
+
+            if (isNaN(newQuantity) || newQuantity <= 0) {
+                alert('Số lượng không hợp lệ. Vui lòng nhập một số nguyên dương.');
+                quantityInput.value = quantityInput.dataset.initialValue || 1; // Khôi phục giá trị cũ hoặc về 1
+                return;
+            }
+
+            if (newQuantity > maxQuantity) {
+                alert('Số lượng bạn nhập vượt quá số lượng sản phẩm có sẵn (' + maxQuantity + ').');
+                quantityInput.value = maxQuantity; // Đặt về số lượng tối đa
+                // Cập nhật lại giỏ hàng với số lượng tối đa hợp lệ
+                const payload = { cartItemId: parseInt(cartItemId), quantity: maxQuantity };
+                sendRequest('PUT', '/api/cart/update', payload);
+                return;
+            }
+
+            // Lưu giá trị hiện tại làm giá trị ban đầu cho lần sau
+            quantityInput.dataset.initialValue = newQuantity;
+
+            const payload = { cartItemId: parseInt(cartItemId), quantity: newQuantity };
+            sendRequest('PUT', '/api/cart/update', payload);
+        }
+
+        function decreaseQuantity(cartItemId) {
+            const quantityInput = document.getElementById('quantity' + cartItemId);
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity > 1) {
+                quantityInput.value = currentQuantity - 1;
+                updateCartItem(cartItemId);
+            } else {
+                alert('Số lượng không thể nhỏ hơn 1. Vui lòng xóa sản phẩm nếu không muốn mua nữa.');
+            }
+        }
+
+        function increaseQuantity(cartItemId) {
+            const quantityInput = document.getElementById('quantity' + cartItemId);
+            let currentQuantity = parseInt(quantityInput.value);
+            const maxQuantity = parseInt(quantityInput.max); // Lấy giá trị max
+
+            if (currentQuantity < maxQuantity) {
+                quantityInput.value = currentQuantity + 1;
+                updateCartItem(cartItemId);
+            } else {
+                alert('Bạn đã đạt đến số lượng tối đa của sản phẩm có sẵn (' + maxQuantity + ').');
+            }
+        }
+
+        function removeCartItem(cartItemId) {
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
+                sendRequest('DELETE', '/api/cart/remove/' + cartItemId);
+            }
+        }
+
+        // Khôi phục giá trị ban đầu khi trang tải xong
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="number"][data-cart-item-id]').forEach(input => {
+                input.dataset.initialValue = input.value;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang đăng ký</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    #hehe {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Đăng ký</h1>
+    <form th:action="@{/register/save}" th:object="${user}" method="post" onsubmit="return check()">
+  
+  <input type="text" th:field="*{name}" placeholder="Họ và tên">
+
+  <input type="password" th:field="*{password}" placeholder="Mật khẩu">
+
+  <input type="text" th:field="*{phone}" maxlength="10" pattern="[0-9]{10}" placeholder="Số điện thoại" required>
+
+  <input type="text" th:field="*{email}" id="email" placeholder="Email">
+
+  <input type="text" th:field="*{address}" placeholder="Địa chỉ">
+
+  <button type="submit">Đăng ký</button>
+
+  <div style="text-align: center; margin-top: 15px;">
+    <span>Đã có tài khoản? </span>
+    <a th:href="@{/login}" style="color: #4CAF50; text-decoration: none;">Đăng nhập</a>
+  </div>
+
+</form>
+  </div>
+
+  <script>
+    function check() {
+      const email = document.getElementById("email").value;
+      const pattern = /^[^\s@]+@[^\s@]+\.(com)$/;
+
+      if (!pattern.test(email)) {
+        document.getElementById("hehe").innerText = "❌ Email không hợp lệ";
+        return false; // Chặn gửi form
+      } else {
+        document.getElementById("hehe").innerText = "";
+        return true; // Cho phép gửi form
+      }
+    }
+  </script>
+</body>
+</html>

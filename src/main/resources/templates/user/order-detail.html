@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết đơn hàng - Top Watch Vietnam</title>
+    <style>
+        /* Tái sử dụng CSS từ home.html và cart.html */
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; }
+        header { background-color: #000; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; flex-wrap: wrap; }
+        .logo { font-size: 1.6em; font-weight: bold; color: #FFD700; }
+        .logo span { display: block; font-size: 0.75em; color: #ccc; }
+        .search-bar { flex: 1; display: flex; justify-content: center; align-items: center; margin: 10px 0; }
+        .search-bar input { width: 60%; padding: 10px; border: none; border-radius: 4px 0 0 4px; outline: none; }
+        .search-bar button { background-color: #FFD700; border: none; padding: 10px 20px; cursor: pointer; border-radius: 0 4px 4px 0; }
+        .hotline-cart { text-align: right; font-size: 0.95em; line-height: 1.4em; }
+        .hotline-cart a.cart-btn { background-color: #FFD700; color: #333; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; transition: background-color 0.3s ease; }
+        .hotline-cart a.cart-btn:hover { background-color: #e6c200; }
+        nav { background-color: #111; display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; padding: 12px 0; }
+        nav a { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.95em; }
+        nav a:hover { text-decoration: underline; color: #FFD700; }
+
+        /* CSS CỤ THỂ CHO TRANG CHI TIẾT ĐƠN HÀNG */
+        .order-details-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .order-details-container h2 {
+            text-align: center;
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .order-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 30px;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .order-info div {
+            padding: 5px 0;
+        }
+        .order-info strong {
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .order-status-detail {
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .status-PENDING { background-color: #ffc107; color: #333; }
+        .status-CONFIRMED { background-color: #007bff; color: #fff; }
+        .status-SHIPPED { background-color: #17a2b8; color: #fff; }
+        .status-DELIVERED { background-color: #28a745; color: #fff; }
+        .status-CANCELLED { background-color: #dc3545; color: #fff; }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .order-items-table th, .order-items-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-items-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .order-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .order-summary {
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .order-summary span {
+            color: #d0021b;
+            margin-left: 20px;
+        }
+        .back-button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .order-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            TOP WATCH VIETNAM <span>PHONG CÁCH THƯỢNG LƯU</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm sản phẩm...">
+            <button>🔍</button>
+        </div>
+        <div class="hotline-cart">
+            📞 HOTLINE<br>1600.6666 - 098.666.666<br>
+            <a th:href="@{/cart}" class="cart-btn">🛒 Giỏ hàng</a>
+  <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🚪 Đăng xuất</button>
+                </form>        </div>
+    </header>
+
+    <nav>
+            <a th:href="@{/user}">🏠 Trang chủ</a>
+		<a th:href="@{/DHN/Đồng hồ nam}">Đồng hồ nam</a>
+        <a  th:href="@{/DHN/Đồng hồ nữ}">Đồng hồ nữ</a>
+        <a th:href="@{/my-orders}">Đơn hàng của tôi</a>
+    </nav>
+
+    <div class="order-details-container">
+        <h2 th:text="'Chi tiết đơn hàng #' + ${order.id}">Chi tiết đơn hàng #ORDXXXX</h2>
+
+        <div th:if="${order}">
+            <div class="order-info">
+                <div>
+                    <strong>Ngày đặt:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></span>></span>
+                </div>
+                <div>
+                    <strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + '₫'"></span>
+                </div>
+                <div>
+                    <strong>Trạng thái:</strong> 
+                    <span class="order-status-detail" th:classappend="'status-' + ${order.status}" th:text="${order.status}"></span>
+                </div>
+                <div>
+                    <strong>Địa chỉ giao hàng:</strong> <span th:text="${order.shippingAddress}"></span>
+                </div>
+                <div>
+                    <strong>Phương thức thanh toán:</strong> <span th:text="${order.paymentMethodName}"></span>
+
+                </div>
+                <div>
+                    <strong>Người đặt:</strong> <span th:text="${order.userName}"></span>
+                </div>
+            </div>
+
+            <h3>Sản phẩm trong đơn hàng:</h3>
+            <table class="order-items-table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${order.orderItems}">
+                        <td>
+<img class="order-item-img" th:src="${item.productImage}" th:alt="${item.productName}" />
+                            <span th:text="${item.productName}">Tên sản phẩm</span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + '₫'">Giá</td>
+                        <td th:text="${item.quantity}">Số lượng</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="order-summary">
+                Tổng cộng: <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + '₫'"></span>
+            </div>
+            
+            <div class="back-button-container">
+                <a th:href="@{/my-orders}" class="back-button">Quay lại danh sách đơn hàng</a>
+            </div>
+
+        </div>
+        <div th:unless="${order}">
+            <p style="text-align: center; color: red;">Không tìm thấy chi tiết đơn hàng hoặc có lỗi xảy ra.</p>
+        </div>
+    </div>
+</body>
+</html>

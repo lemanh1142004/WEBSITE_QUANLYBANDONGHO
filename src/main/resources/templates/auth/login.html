@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f3f3f3;
+            padding: 50px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            width: 300px;
+            margin: auto;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+        input {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 16px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    margin: 20px auto;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+    </style>
+</head>
+<body>
+  <!-- Hiển thị thông báo đăng xuất thành công -->
+  <div class="alert-success" th:if="${param.logout}">
+    ✅ Bạn đã đăng xuất thành công.
+</div>
+<h2 style="text-align: center;">Đăng nhập</h2>
+
+<form th:action="@{/login}" method="post">
+    <input type="text" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Mật khẩu" required />
+
+    <!-- Hiển thị lỗi nếu có -->
+    <div class="error" th:if="${param.error}">
+        Sai tài khoản hoặc mật khẩu!
+    </div>
+
+  
+
+    <button type="submit">Đăng nhập</button>
+    <div style="text-align: center; margin-top: 15px;">
+    <span>Chưa có tài khoản? </span>
+    <a th:href="@{/register}" style="color: #4CAF50; text-decoration: none;">Đăng ký</a>
+</div>
+  <div style="text-align: center; margin-top: 15px;">
+    
+    <a th:href="@{/input_email}" style="color: #4CAF50; text-decoration: none;">Quên Mật khẩu</a>
+</div>
+</form>
+
+</body>
+</html>

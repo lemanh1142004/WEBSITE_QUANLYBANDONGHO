@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Watch Vietnam</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        .logo span {
+            display: block;
+            font-size: 0.75em;
+            color: #ccc;
+        }
+        .search-bar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .search-bar input {
+            width: 60%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+        .search-bar button {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+        .hotline-cart {
+            text-align: right;
+            font-size: 0.95em;
+            line-height: 1.4em;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .hotline-info {
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        nav {
+            background-color: #111;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 12px 0;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        nav a:hover {
+            text-decoration: underline;
+            color: #FFD700;
+        }
+        .banner {
+            width: 100%;
+            height: 500px;
+            background: url('https://dongho.webmau68.com/wp-content/uploads/2018/09/Movado_Landing_Page_Banner_12-22.jpg') no-repeat center center/cover;
+        }
+        @media screen and (max-width: 768px) {
+            .search-bar input {
+                width: 100%;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .hotline-cart {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+            .user-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+        
+        .product-grid-section {
+            padding: 40px 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        /* Tiêu đề section */
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        /* Lưới sản phẩm */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            justify-items: center;
+        }
+
+        /* Card sản phẩm */
+        .product-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Hình ảnh sản phẩm */
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Tên sản phẩm */
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #222;
+            margin: 0 0 8px;
+        }
+
+        /* Giá sản phẩm */
+        .product-card p:nth-of-type(1) {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #d0021b;
+            margin-bottom: 8px;
+        }
+
+        /* Danh mục */
+        .product-category {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .cart-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #e53935;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        .cart-btn:hover {
+            background-color: #c62828;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .logout-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .search-section {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+         .search-bar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+     .search-bar input {
+    width: 60%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    background-color: white; /* ✅ Thêm dòng này */
+    color: black;             /* ✅ Đảm bảo chữ hiển thị rõ */
+}
+        .search-bar button {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            TOP WATCH VIETNAM <span>PHONG CÁCH THƯỢNG LƯU</span>
+        </div>
+     <div class="search-bar">
+			  <form th:action="@{/user}" method="get" class="search-form">
+                <input type="text" name="keyword" placeholder="🔍 Tìm kiếm sản phẩm theo tên, danh mục..." class="search-input" />
+                <button type="submit" class="btn btn-primary">
+                    🔍 Tìm kiếm
+                </button>
+            </form>
+		</div>
+        <div class="hotline-cart">
+            <div class="hotline-info">
+                📞 HOTLINE<br>1600.6666 - 098.666.666
+            </div>
+            <div class="user-actions">
+                <a th:href="@{/cart}" class="cart-btn">🛒 Giỏ hàng</a>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🚪 Đăng xuất</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a th:href="@{/user}">🏠 Trang chủ</a>
+        <a th:href="@{/DHN/Đồng hồ nam}">Đồng hồ nam</a>
+        <a th:href="@{/DHN/Đồng hồ nữ}">Đồng hồ nữ</a>
+        <a th:href="@{/my-orders}">Đơn hàng của tôi</a>
+    </nav>
+
+    <div class="banner"></div>
+     
+    <section class="product-grid-section">
+        <h2 class="section-title">Sản phẩm nổi bật</h2>
+        <div class="product-grid">
+            <!-- Vòng lặp qua danh sách sản phẩm -->
+            <div class="product-card" th:each="product : ${products}">
+                <!-- Bọc nội dung bằng thẻ <a> để điều hướng -->
+                <a th:href="@{'/products_detail/' + ${product.id}}" style="text-decoration: none;">
+                    <img class="product-img" th:src="${product.imageUrl}" th:alt="${product.name}" />
+                    <h3 class="product-name" th:text="${product.name}">Tên sản phẩm</h3>
+                    <p th:text="${product.price}">0 VND</p>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+</body>
+</html>

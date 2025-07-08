@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    </head>
+<body>
+    <header th:fragment="body">
+        <div class="logo">
+            TOP WATCH VIETNAM <span>PHONG CÁCH THƯỢNG LƯU</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm sản phẩm...">
+            <button>🔍</button>
+        </div>
+        <div class="hotline-cart">
+            📞 HOTLINE<br>1600.6666 - 098.666.666<br>
+            <a th:href="@{/cart}" class="cart-btn">🛒 Giỏ hàng</a>
+  <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🚪 Đăng xuất</button>
+                </form>            
+            
+        </div>
+    </header>
+
+    <nav th:fragment="navbar"> <a th:href="@{/user}" class="active">🏠 Trang chủ</a>
+      <a th:href="@{/DHN/Đồng hồ nam}">Đồng hồ nam</a>
+        <a  th:href="@{/DHN/Đồng hồ nữ}">Đồng hồ nữ</a>
+   
+        <a th:href="@{/my-orders}">Đơn hàng của tôi</a>
+    </nav>
+</body>
+</html>

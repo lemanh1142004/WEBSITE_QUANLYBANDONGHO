@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>OTP Xác thực Email</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #messageBox {
+      color: #0a58ca;
+      font-weight: bold;
+      margin-bottom: 15px;
+      transition: opacity 1s ease;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 Xác thực Email bằng OTP</h2>
+
+    <!-- Thông báo -->
+    <div id="messageBox"></div>
+
+    <!-- Form xác minh OTP -->
+    <form action="/email/verify-otp" method="post">
+      <input type="text" name="otp" placeholder="Nhập mã OTP" required>
+      <button type="submit">Xác minh</button>
+    </form>
+
+    <!-- Nút gửi lại mã -->
+    <form action="/email/send-otp" method="post">
+  <input type="hidden" name="email" th:value="${session.email}">
+      <button type="submit">Gửi lại mã</button>
+    </form>
+  </div>
+
+
+</body>
+</html>
